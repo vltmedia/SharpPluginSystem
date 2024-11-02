@@ -1,0 +1,70 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        platform: [x64, x86]
+        configuration: [Release, Debug]
+
+    steps:
+    # Checkout the repository
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    # Setup .NET environment
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.x' # Set the version of .NET SDK you need
+
+    # Restore dependencies for the solution
+    - name: Restore dependencies
+      run: dotnet restore
+
+    # Build each project in the solution
+    - name: Build solution
+      run: dotnet build --configuration ${{ matrix.configuration }} --runtime win-${{ matrix.platform }} --no-restore --output ./bin/${{ matrix.platform }}/${{ matrix.configuration }}
+
+    # Pack each project in the solution to create .nupkg files, if they have a .nuspec
+    - name: Pack solution
+      run: dotnet pack --configuration ${{ matrix.configuration }} --output ./bin/${{ matrix.platform }}/${{ matrix.configuration }} --no-build
+
+    # Identify version and create release tag
+    - name: Get version and create release tag
+      id: get_version
+      run: |
+        # Extract the version from a specific project file or specify it here if hardcoded
+        VERSION=$(dotnet run --project path/to/your/project.csproj -- --version)
+        echo "VERSION=${VERSION}" >> $GITHUB_ENV
+        echo "Release tag: v${VERSION}"
+      shell: bash
+
+    - name: Create release tag
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ env.VERSION }}
+        release_name: "Release v${{ env.VERSION }}"
+        draft: false
+        prerelease: false
+
+    # Upload .nupkg files to the release
+    - name: Upload .nupkg files
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./bin/${{ matrix.platform }}/${{ matrix.configuration }}/*.nupkg
+        asset_name: "${{ matrix.platform }}-${{ matrix.configuration }}-${{ env.VERSION }}.nupkg"
+        asset_content_type: application/zip
