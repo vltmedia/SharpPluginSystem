@@ -1,63 +1,84 @@
-# GitHub Actions Workflow - Updated
-
-name: Build and Release
+name: Build, Package, and Release
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build-and-release:
-    runs-on: windows-latest
-
+  build-and-package:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [x64, x86]
-        configuration: [Release, Debug]
+        configuration:
+          - x64
+          - x86
+        runtime:
+          - win-x64
+          - win-x86
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: '6.x' # Adjust to your .NET version
+        dotnet-version: 8.x
 
-    - name: Restore dependencies
+    - name: Install dependencies
       run: dotnet restore
 
-    - name: Build solution
-      run: dotnet build --configuration ${{ matrix.configuration }} --no-restore --output ./bin/${{ matrix.platform }}/${{ matrix.configuration }}
+    - name: Build solution for ${{ matrix.configuration }} configuration on ${{ matrix.runtime }} runtime
+      run: dotnet build --configuration Release -r ${{ matrix.runtime }} --output ./output/${{ matrix.configuration }}
 
-    - name: Pack solution
-      run: dotnet pack --configuration ${{ matrix.configuration }} --output ./bin/${{ matrix.platform }}/${{ matrix.configuration }} --no-build
-
-    - name: Get version and create release tag
-      id: get_version
+    - name: Pack solution with runtime-specific assets
       run: |
-        VERSION=$(dotnet run --project path/to/your/project.csproj -- --version)
-        echo "VERSION=${VERSION}" >> $GITHUB_ENV
-      shell: bash
+        dotnet pack --configuration Release -r ${{ matrix.runtime }} --no-build --output ./output/packages
 
-    - name: Create release tag
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Collect .nupkg files
+      id: collect-packages
+      run: |
+        echo "PACKAGES=$(ls ./output/packages/*.nupkg)" >> $GITHUB_ENV
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
       with:
-        tag_name: v${{ env.VERSION }}
-        release_name: "Release v${{ env.VERSION }}"
+        name: packages
+        path: ./output/packages
+
+  release:
+    needs: build-and-package
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Create GitHub Release
+      id: create_release
+      uses: actions/create-release@v1
+      with:
+        tag_name: v${{ steps.get-version.outputs.version }}
+        release_name: Release v${{ steps.get-version.outputs.version }}
+        body: |
+          Automated release based on CI workflow.
         draft: false
         prerelease: false
-
-    - name: Upload .nupkg files
-      uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload .nupkg files to GitHub Release
+      uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./bin/${{ matrix.platform }}/${{ matrix.configuration }}/*.nupkg
-        asset_name: "${{ matrix.platform }}-${{ matrix.configuration }}-${{ env.VERSION }}.nupkg"
-        asset_content_type: application/zip
+        asset_path: ./output/packages/*.nupkg
+        asset_name: ${{ matrix.configuration }}-${{ matrix.runtime }}.nupkg
+        label: "NuGet Package (Runtime: ${{ matrix.runtime }}, Configuration: ${{ matrix.configuration }})"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
