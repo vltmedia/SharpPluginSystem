@@ -49,7 +49,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: nupkg
-          path: '**/bin/Release/**/*.nupkg' # Searches all projects for .nupkg files in default output paths
+          path: '**/bin/Release/*.nupkg' # Searches all projects for .nupkg files in default output paths
 
       - name: Upload .nupkg to GitHub Release
         uses: actions/upload-release-asset@v1
