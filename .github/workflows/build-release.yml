@@ -59,3 +59,7 @@ jobs:
           asset_content_type: application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      
+      - name: Push generated package to Nuget registry
+        run: dotnet nuget push ./bin/Release/*.nupkg  -k ${{secrets.GITHUB_TOKEN}} -s https://api.nuget.org/v3/index.json
