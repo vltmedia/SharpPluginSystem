@@ -55,7 +55,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: '**/bin/Release/**/*.nupkg'
+          asset_path: '**/bin/Release/*.nupkg'
           asset_name: package-${{ github.ref_name }}.nupkg
           asset_content_type: application/zip
         env:
