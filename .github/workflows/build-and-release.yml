@@ -27,6 +27,12 @@ jobs:
       - name: Publish Package
         run: dotnet pack --configuration Release --property Platform="Any CPU" --output ./artifacts || dotnet pack --configuration Release --output ./artifacts
 
+      - name: Delete Existing Release if Exists
+        run: |
+          gh release delete "${GITHUB_REF_NAME}" -y || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -37,6 +43,7 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
           
       - name: Upload .nupkg artifacts
         uses: actions/upload-artifact@v3
