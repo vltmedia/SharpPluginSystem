@@ -37,18 +37,18 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+          
       - name: Upload .nupkg artifacts
         uses: actions/upload-artifact@v3
         with:
           name: nupkg
-          path: ./artifacts/*.nupkg
+          path: '**/bin/Release/**/*.nupkg' # Searches all projects for .nupkg files in default output paths
 
       - name: Upload .nupkg to GitHub Release
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v2
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/*.nupkg
+          asset_path: '**/bin/Release/**/*.nupkg'
           asset_name: package-${{ github.ref_name }}.nupkg
           asset_content_type: application/zip
         env:
