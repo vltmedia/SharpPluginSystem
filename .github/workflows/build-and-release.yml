@@ -27,23 +27,13 @@ jobs:
       - name: Publish Package
         run: dotnet pack --configuration Release --property Platform="Any CPU" --output ./artifacts || dotnet pack --configuration Release --output ./artifacts
 
-      - name: Delete Existing Release if Exists
-        run: |
-          gh release delete "${GITHUB_REF_NAME}" -y || true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Upload .nupkg artifacts to GitHub Actions
         uses: actions/upload-artifact@v3
         with:
           name: nupkg
           path: './artifacts/*.nupkg' # This should match the output directory specified in dotnet pack
 
-      - name: List files in artifacts directory (before release upload)
-        run: ls -R ./artifacts || echo "No artifacts found"
-        shell: bash
 
- 
     
       - name: Find and Rename .nupkg to input.nupkg
         run: |
@@ -58,11 +48,7 @@ jobs:
             echo "Renamed $file to input.nupkg"
           fi
         shell: bash
-          
-      - name: List files in Release directory (before release upload)
-        run: ls -R . || echo "No artifacts found"
-        shell: bash
-
+  
     
       - name: Upload .nupkg to Current GitHub Release
         uses: actions/upload-release-asset@v1
