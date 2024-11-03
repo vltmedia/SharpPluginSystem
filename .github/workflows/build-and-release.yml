@@ -18,15 +18,14 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.x'
-
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build Solution in AnyCPU Configuration
-        run: dotnet build --configuration Release --property Platform="AnyCPU"
+      - name: Build Solution in Any CPU Configuration
+        run: dotnet build --configuration Release --property Platform="Any CPU" || dotnet build --configuration Release
 
       - name: Publish Package
-        run: dotnet pack --configuration Release --property Platform="AnyCPU" --output ./artifacts
+        run: dotnet pack --configuration Release --property Platform="Any CPU" --output ./artifacts || dotnet pack --configuration Release --output ./artifacts
 
       - name: Create Release
         id: create_release
