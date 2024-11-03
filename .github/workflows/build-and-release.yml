@@ -55,17 +55,15 @@ jobs:
         run: ls -R ./artifacts || echo "No artifacts found"
         shell: bash
 
-        
       - name: List files in Release directory (before release upload)
         run: ls -R . || echo "No artifacts found"
         shell: bash
 
-        
       - name: Upload .nupkg to GitHub Release
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: '*.nupkg' # Update this path to point to the artifacts folder
+          asset_path: './artifacts/*.nupkg' # Correct path to the artifacts folder
           asset_name: package-${{ github.ref_name }}.nupkg
           asset_content_type: application/zip
         env:
