@@ -18,6 +18,7 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.x'
+
       - name: Restore dependencies
         run: dotnet restore
 
@@ -32,7 +33,7 @@ jobs:
           gh release delete "${GITHUB_REF_NAME}" -y || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -43,19 +44,18 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-          
-      - name: Upload .nupkg artifacts
+
+      - name: Upload .nupkg artifacts to GitHub Actions
         uses: actions/upload-artifact@v3
         with:
           name: nupkg
-          path: 'bin/Release/*.nupkg' # Searches all projects for .nupkg files in default output paths
+          path: './artifacts/*.nupkg' # This should match the output directory specified in dotnet pack
 
       - name: Upload .nupkg to GitHub Release
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: 'bin/Release/*.nupkg'
+          asset_path: './artifacts/*.nupkg' # Update this path to point to the artifacts folder
           asset_name: package-${{ github.ref_name }}.nupkg
           asset_content_type: application/zip
         env:
