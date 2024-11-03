@@ -8,25 +8,28 @@
     <DocumentationFile>docs/docs.xml</DocumentationFile>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <Authors>UAI Software Inc.</Authors>
     <Description>Run REST Requests in non ASP C#!</Description>
     <PackageProjectUrl>https://github.com/vltmedia/SharpREST</PackageProjectUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/vltmedia/SharpREST</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>REST, server</PackageTags>
-    <AssemblyVersion>1.0.3</AssemblyVersion>
-    <FileVersion>1.0.3</FileVersion>
+    <AssemblyVersion>1.0.4</AssemblyVersion>
+    <FileVersion>1.0.4</FileVersion>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
+
+
   <ItemGroup>
-    <None Include="README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
+    <!-- Specify the files to include in the package -->
+    <None Include="LICENSE.txt" Pack="true" PackagePath="LICENSE.txt" />
+    <None Include="README.md" Pack="true" PackagePath="README.md" />
   </ItemGroup>
 
 
