@@ -2,84 +2,55 @@ name: Build, Package, and Release
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    tags:
+      - 'v*'   # Triggers on version tags like v1.0, v2.1, etc.
   workflow_dispatch:
 
 jobs:
-  build-and-package:
+  build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        configuration:
-          - x64
-          - x86
-        runtime:
-          - win-x64
-          - win-x86
-    env:
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.x
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x'
 
-    - name: Install dependencies
-      run: dotnet restore
+      - name: Restore dependencies
+        run: dotnet restore
 
-    - name: Build solution for ${{ matrix.configuration }} configuration on ${{ matrix.runtime }} runtime
-      run: dotnet build --configuration Release -r ${{ matrix.runtime }} --output ./output/${{ matrix.configuration }}
+      - name: Build Solution in AnyCPU Configuration
+        run: dotnet build --configuration Release --property Platform="AnyCPU"
 
-    - name: Pack solution with runtime-specific assets
-      run: |
-        dotnet pack --configuration Release -r ${{ matrix.runtime }} --no-build --output ./output/packages
+      - name: Publish Package
+        run: dotnet pack --configuration Release --property Platform="AnyCPU" --output ./artifacts
 
-    - name: Collect .nupkg files
-      id: collect-packages
-      run: |
-        echo "PACKAGES=$(ls ./output/packages/*.nupkg)" >> $GITHUB_ENV
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: packages
-        path: ./output/packages
+      - name: Upload .nupkg artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: nupkg
+          path: ./artifacts/*.nupkg
 
-  release:
-    needs: build-and-package
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Create GitHub Release
-      id: create_release
-      uses: actions/create-release@v1
-      with:
-        tag_name: v${{ steps.get-version.outputs.version }}
-        release_name: Release v${{ steps.get-version.outputs.version }}
-        body: |
-          Automated release based on CI workflow.
-        draft: false
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Upload .nupkg files to GitHub Release
-      uses: actions/upload-release-asset@v3
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./output/packages/*.nupkg
-        asset_name: ${{ matrix.configuration }}-${{ matrix.runtime }}.nupkg
-        label: "NuGet Package (Runtime: ${{ matrix.runtime }}, Configuration: ${{ matrix.configuration }})"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload .nupkg to GitHub Release
+        uses: actions/upload-release-asset@v2
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/*.nupkg
+          asset_name: package-${{ github.ref_name }}.nupkg
+          asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

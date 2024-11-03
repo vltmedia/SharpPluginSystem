@@ -1,34 +1,43 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net8.0-windows</TargetFrameworks> <!-- Add other target frameworks as needed -->
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>docs/docs.xml</DocumentationFile>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Version>1.0.0</Version>
     <Authors>UAI Software Inc.</Authors>
     <Description>Run REST Requests in non ASP C#!</Description>
     <PackageProjectUrl>https://github.com/vltmedia/SharpREST</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/vltmedia/SharpREST</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageTags>REST, server</PackageTags>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+    <Platforms>AnyCPU;x64;x86</Platforms>
+    <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
   </PropertyGroup>
 
-  <!-- Runtime-specific assets -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0-windows'">
-    <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+  <ItemGroup>
+    <None Include="F:\Projects\UAI\UAI_ONNX_FaceParse\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(Platform)' == 'x64'">
-    <None Include="bin\x64\Release\net8.0-windows\*.dll" Pack="true" PackagePath="runtimes\win-x64\lib\net8.0" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(Platform)' == 'x86'">
-    <None Include="bin\x86\Release\net8.0-windows\*.dll" Pack="true" PackagePath="runtimes\win-x86\lib\net8.0" />
-  </ItemGroup>
+
 
   <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="\\" />
+    <PackageReference Include="Vsxmd" Version="1.4.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Vsxmd" Version="1.4.5" PrivateAssets="all" />
-  </ItemGroup>
+
 
 </Project>
