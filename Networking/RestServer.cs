@@ -110,7 +110,15 @@ namespace SharpREST
                 }
             }
         }
+        public string GetRequestBody( HttpListenerContext request){
+string requestBody = "";
+using (StreamReader reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                {
+                    requestBody = reader.ReadToEnd();
+                }
+            return requestBody;
 
+        }
         // Listener method for handling incoming HTTP requests
         private void ListenForRequests()
         {
