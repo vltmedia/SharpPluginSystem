@@ -8,15 +8,15 @@
     <DocumentationFile>docs/docs.xml</DocumentationFile>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.0.5</Version>
+    <Version>1.0.6</Version>
     <Authors>UAI Software Inc.</Authors>
     <Description>Run REST Requests in non ASP C#!</Description>
     <PackageProjectUrl>https://github.com/vltmedia/SharpREST</PackageProjectUrl>
     <RepositoryUrl>https://github.com/vltmedia/SharpREST</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>REST, server</PackageTags>
-    <AssemblyVersion>1.0.5</AssemblyVersion>
-    <FileVersion>1.0.5</FileVersion>
+    <AssemblyVersion>1.0.6</AssemblyVersion>
+    <FileVersion>1.0.6</FileVersion>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
 
