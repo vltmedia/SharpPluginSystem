@@ -31,78 +31,65 @@ namespace PluginSystem
         public abstract List<string> OutputNames { get; }
 
         private readonly Dictionary<string, Func<TInput, object, object>> syncFunctions = new();
-        private readonly Dictionary<string, Func<TInput, object, Task<object>>> asyncFunctions = new();
+    private readonly Dictionary<string, Func<TInput, object, Task<object>>> asyncFunctions = new();
 
-
-        /// <summary>
-        /// Register a synchronous function for the plugin's output.
-        /// </summary>
-        public void RegisterFunction(string outputName, Func<TInput, object, object> function)
+    /// <summary>
+    /// Register a synchronous function for the plugin's output.
+    /// </summary>
+    public void RegisterFunction(string outputName, Func<TInput, object, object> function)
+    {
+        if (!OutputNames.Contains(outputName))
         {
-            if (!OutputNames.Contains(outputName))
-            {
-                throw new InvalidOperationException($"Output '{outputName}' is not defined for this plugin.");
-            }
-
-            syncFunctions[outputName] = function;
+            throw new InvalidOperationException($"Output '{outputName}' is not defined for this plugin.");
         }
 
-        /// <summary>
-        /// Register an asynchronous function for the plugin's output.
-        /// </summary>
-        public void RegisterFunction(string outputName, Func<TInput, object, Task<object>> function)
-        {
-            if (!OutputNames.Contains(outputName))
-            {
-                throw new InvalidOperationException($"Output '{outputName}' is not defined for this plugin.");
-            }
+        syncFunctions[outputName] = function;
+    }
 
-            asyncFunctions[outputName] = function;
+    /// <summary>
+    /// Register an asynchronous function for the plugin's output.
+    /// </summary>
+    public void RegisterFunction(string outputName, Func<TInput, object, Task<object>> function)
+    {
+        if (!OutputNames.Contains(outputName))
+        {
+            throw new InvalidOperationException($"Output '{outputName}' is not defined for this plugin.");
         }
 
+        asyncFunctions[outputName] = function;
+    }
 
-        public virtual object[] Run(TInput inputs, object lastResult)
+    /// <summary>
+    /// Executes a specific synchronous function for the given output name.
+    /// </summary>
+    public object ExecuteFunction(string outputName, TInput inputs, object lastResult)
+    {
+        if (syncFunctions.TryGetValue(outputName, out var function))
         {
-            object[] items = new object[OutputNames.Count];
-            return items;
-
-        }
-        public virtual Task<object[]> RunAsync(TInput inputs, object lastResult)
-        {
-            return Task.Run(() => Run(inputs, lastResult));
-        }
-
-        /// <summary>
-        /// Executes a specific synchronous function for the given output name.
-        /// </summary>
-        public object ExecuteFunction(string outputName, TInput inputs, object lastResult)
-        {
-            if (syncFunctions.TryGetValue(outputName, out var function))
-            {
-                return function(inputs, lastResult);
-            }
-
-            throw new InvalidOperationException($"No synchronous function registered for output '{outputName}'.");
+            return function(inputs, lastResult);
         }
 
-        /// <summary>
-        /// Executes a specific asynchronous function for the given output name.
-        /// </summary>
-        public async Task<object> ExecuteFunctionAsync(string outputName, TInput inputs, object lastResult)
+        throw new InvalidOperationException($"No synchronous function registered for output '{outputName}'.");
+    }
+
+    /// <summary>
+    /// Executes a specific asynchronous function for the given output name.
+    /// </summary>
+    public async Task<object> ExecuteFunctionAsync(string outputName, TInput inputs, object lastResult)
+    {
+        if (asyncFunctions.TryGetValue(outputName, out var function))
         {
-            if (asyncFunctions.TryGetValue(outputName, out var function))
-            {
-                return await function(inputs, lastResult);
-            }
-
-            if (syncFunctions.TryGetValue(outputName, out var syncFunction))
-            {
-                // Fallback to synchronous function
-                return syncFunction(inputs, lastResult);
-            }
-
-            throw new InvalidOperationException($"No function registered for output '{outputName}'.");
+            return await function(inputs, lastResult);
         }
+
+        if (syncFunctions.TryGetValue(outputName, out var syncFunction))
+        {
+            // Fallback to synchronous function
+            return syncFunction(inputs, lastResult);
+        }
+
+        throw new InvalidOperationException($"No function registered for output '{outputName}'.");
+    }
     }
 
     public class Plugin : BasePlugin<Dictionary<string, object>>

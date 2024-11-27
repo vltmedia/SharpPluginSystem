@@ -62,11 +62,6 @@ namespace PluginSystem.Plugins.Basic
 
         }
 
-        public override object[] Run(Dictionary<string, object> inputs, object lastResult)
-        {
-            // Not used; we handle execution in specific functions.
-            throw new NotImplementedException();
-        }
     }
 
 
@@ -100,11 +95,6 @@ namespace PluginSystem.Plugins.Basic
             });
         }
 
-        public override object[] Run(Dictionary<string, object> inputs, object lastResult)
-        {
-            // Not used; we handle execution in specific functions.
-            throw new NotImplementedException();
-        }
     }
 
     // Make a Cos plugin
@@ -137,11 +127,6 @@ namespace PluginSystem.Plugins.Basic
             });
         }
 
-        public override object[] Run(Dictionary<string, object> inputs, object lastResult)
-        {
-            // Not used; we handle execution in specific functions.
-            throw new NotImplementedException();
-        }
     }
 
     // Make a Tan plugin
@@ -174,10 +159,6 @@ namespace PluginSystem.Plugins.Basic
             });
         }
 
-        public override object[] Run(Dictionary<string, object> inputs, object lastResult)
-        {
-            // Not used; we handle execution in specific functions.
-            throw new NotImplementedException();
-        }
+       
     }
 }

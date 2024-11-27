@@ -29,35 +29,23 @@ Create a custom plugin by subclassing `Plugin`:
 ```csharp
 using PluginSystem;
 
-public class MathPlugin : Plugin
+
+public class ConsumerPlugin : Plugin
 {
-    public override string PluginId => "math_plugin";
-    public override string PluginName => "Math Plugin";
+    public override string PluginId => "consumer_plugin";
+    public override string PluginName => "Consumer Plugin";
     public override FXPluginType PluginType => FXPluginType.Sequential;
 
-    public override List<string> InputNames => new List<string> { "A", "B" };
-    public override List<string> OutputNames => new List<string> { "Sum", "Difference" };
+    public override List<string> InputNames => new List<string> { "Input" };
+    public override List<string> OutputNames => new List<string> { "ProcessedOutput" };
 
-    public MathPlugin()
+    public ConsumerPlugin()
     {
-        RegisterFunction("Sum", (inputs, lastResult) =>
+        RegisterFunction("ProcessedOutput", (inputs, lastResult) =>
         {
-            var a = Convert.ToSingle(inputs["A"]);
-            var b = Convert.ToSingle(inputs["B"]);
-            return a + b;
+            var input = Convert.ToSingle(inputs["Input"]);
+            return input * 2; // Example processing
         });
-
-        RegisterFunction("Difference", (inputs, lastResult) =>
-        {
-            var a = Convert.ToSingle(inputs["A"]);
-            var b = Convert.ToSingle(inputs["B"]);
-            return a - b;
-        });
-    }
-
-    public override object[] Run(Dictionary<string, object> inputs, object lastResult)
-    {
-        throw new NotImplementedException("Use registered functions to execute specific outputs.");
     }
 }
 ```
@@ -91,18 +79,34 @@ Console.WriteLine($"Difference: {differenceResult}");
 Example:
 
 ```csharp
-var fxGraph = new FXGraph();
 
-var mathPlugin = new MathPlugin();
-fxGraph.AddPlugin(mathPlugin);
 
-var greetingPlugin = new GreetingPlugin();
-fxGraph.AddPlugin(greetingPlugin);
+static async Task Main()
+    {
+        var fxGraph = new FXGraph();
 
-fxGraph.ConnectNodes(mathPlugin.PluginId, "Sum", greetingPlugin.PluginId, "Name");
+        // Create the MathPlugin
+        var mathPlugin = new MathPlugin();
 
-var result = fxGraph.RunFXGraph();
-Console.WriteLine($"Final Result: {result}");
+        // Add MathPlugin to the graph
+        var mathNode = new FXGraphItem(mathPlugin);
+        fxGraph.AddPlugin(mathPlugin);
+
+        // Simulate an external consumer node (hypothetical)
+        var consumerPlugin = new ConsumerPlugin(); // A plugin that consumes "Sum"
+        fxGraph.AddPlugin(consumerPlugin);
+
+        // Connect the "Sum" output of MathPlugin to the "Input" of ConsumerPlugin
+        fxGraph.ConnectNodes(mathNode.UniqueId, "Sum", consumerPlugin.PluginId, "Input");
+
+        // Define inputs for the MathPlugin
+        var inputs = new Dictionary<string, object> { { "A", 10f }, { "B", 5f } };
+
+        // Run the graph
+        var result = await fxGraph.RunFXGraphAsync();
+
+        Console.WriteLine($"Final Result: {result}");
+    }
 ```
 
 ### Asynchronous Execution
