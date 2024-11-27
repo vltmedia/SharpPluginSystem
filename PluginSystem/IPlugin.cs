@@ -74,4 +74,30 @@ namespace PluginSystem
             throw new InvalidOperationException($"No function registered for output '{outputName}'.");
         }
     }
+
+    public class Plugin : BasePlugin<Dictionary<string, object>>
+    {
+        public override string PluginId => throw new NotImplementedException();
+
+        public override string PluginName => throw new NotImplementedException();
+
+        public override string PluginDescription => throw new NotImplementedException();
+
+        public override string PluginMetadata => throw new NotImplementedException();
+
+        public override string PluginURL => throw new NotImplementedException();
+
+        public override string PluginAuthor => throw new NotImplementedException();
+
+        public override string PluginCategory => throw new NotImplementedException();
+
+        public override string PluginPath => throw new NotImplementedException();
+
+        public override FXPluginType PluginType => throw new NotImplementedException();
+
+        public override List<string> InputNames => throw new NotImplementedException();
+
+        public override List<string> OutputNames => throw new NotImplementedException();
+    }
+
 }

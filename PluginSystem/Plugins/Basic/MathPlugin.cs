@@ -8,7 +8,7 @@ using PluginSystem;
 namespace PluginSystem.Plugins.Basic
 {
 
-    public class MathPlugin : BasePlugin<Dictionary<string, object>>
+    public class MathPlugin : Plugin
     {
         public override string PluginId => "math_plugin_addsubtract";
         public override string PluginName => "Math Plugin";
