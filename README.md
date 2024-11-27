@@ -105,6 +105,23 @@ var result = fxGraph.RunFXGraph();
 Console.WriteLine($"Final Result: {result}");
 ```
 
+### Asynchronous Execution
+Just incase you don't want your UI to freeze while executing a plugin, you can run the graph asynchronously.
+
+```csharp
+var mathPlugin = new MathPlugin();
+
+var inputs = new Dictionary<string, object>
+{
+    { "A", 10f },
+    { "B", 5f }
+};
+
+var sumResult = await mathPlugin.ExecuteFunctionAsync("Sum", inputs, null);
+Console.WriteLine($"Sum: {sumResult}");
+```
+
+
 ## Save and Load Graphs
 
 ### Save Graph

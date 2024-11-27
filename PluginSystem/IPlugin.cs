@@ -54,13 +54,17 @@ namespace PluginSystem
 
             functions[outputName] = function;
         }
+
         public virtual object[] Run(TInput inputs, object lastResult)
         {
             object[] items = new object[OutputNames.Count];
             return items;
 
         }
-
+        public virtual Task<object[]> RunAsync(TInput inputs, object lastResult)
+        {
+            return Task.Run(() => Run(inputs, lastResult));
+        }
         /// <summary>
         /// Executes a specific function for the given output name.
         /// </summary>
@@ -69,6 +73,19 @@ namespace PluginSystem
             if (functions.TryGetValue(outputName, out var function))
             {
                 return function(inputs, lastResult);
+            }
+
+            throw new InvalidOperationException($"No function registered for output '{outputName}'.");
+        }
+
+        /// <summary>
+        /// Executes a specific function for the given output name asynchronously.
+        /// </summary>
+        public Task<object> ExecuteFunctionAsync(string outputName, TInput inputs, object lastResult)
+        {
+            if (functions.TryGetValue(outputName, out var function))
+            {
+                return Task.Run(() => function(inputs, lastResult));
             }
 
             throw new InvalidOperationException($"No function registered for output '{outputName}'.");
