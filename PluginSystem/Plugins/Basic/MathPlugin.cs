@@ -15,7 +15,7 @@ namespace PluginSystem.Plugins.Basic
         public override FXPluginType PluginType => FXPluginType.Sequential;
 
         public override List<string> InputNames => new List<string> { "A", "B" };
-        public override List<string> OutputNames => new List<string> { "Sum", "Difference" };
+        public override List<string> OutputNames => new List<string> { "Sum", "Difference" , "Division", "Multiplication"};
 
         public override string PluginDescription => "Math plugin as an example";
 
