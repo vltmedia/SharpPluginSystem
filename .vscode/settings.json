@@ -4,5 +4,6 @@
         "titleBar.activeBackground": "#383F57",
         "titleBar.activeForeground": "#FAFAFC"
     },
-    "window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}${profileName}${separator}${appName}${separator}[Branch: master]"
+    "window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}${profileName}${separator}${appName}${separator}[Branch: master]",
+    "workbench.colorTheme": "Material Theme Ocean High Contrast"
 }

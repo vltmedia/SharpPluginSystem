@@ -1,138 +1,62 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>SharpREST</name>
+        <name>SharpPluginSystem</name>
     </assembly>
     <members>
-        <member name="T:SharpREST.RestServer">
+        <member name="M:PluginSystem.BasePlugin`1.OnEnabled">
             <summary>
-            Represents a REST server that listens for incoming HTTP requests and routes them to appropriate handlers.
+            Lifecycle method called when the plugin is enabled.
             </summary>
         </member>
-        <member name="P:SharpREST.RestServer.IsServerRunning">
+        <member name="M:PluginSystem.BasePlugin`1.OnDisabled">
             <summary>
-            Gets a value indicating whether the REST server is currently running.
+            Lifecycle method called when the plugin is disabled.
             </summary>
         </member>
-        <member name="P:SharpREST.RestServer.CurrentPort">
+        <member name="M:PluginSystem.BasePlugin`1.RegisterFunction(System.String,System.Func{`0,System.Object,System.Object})">
             <summary>
-            Gets the current port number on which the REST server is running.
+            Register a named function for the plugin's output.
             </summary>
         </member>
-        <member name="M:SharpREST.RestServer.StartServer(System.Int32)">
+        <member name="M:PluginSystem.BasePlugin`1.ExecuteFunction(System.String,`0,System.Object)">
             <summary>
-            Starts the REST server on the specified port.
-            </summary>
-            <param name="startingPort">The port number to start the server on. Default is 8080.</param>
-        </member>
-        <member name="M:SharpREST.RestServer.StopServer">
-            <summary>
-            Stops the running REST server.
+            Executes a specific function for the given output name.
             </summary>
         </member>
-        <member name="M:SharpREST.RestServer.GetRoute(System.String,SharpREST.RestRequestType)">
+        <member name="M:PluginSystem.PluginLoader.LoadPlugins">
             <summary>
-            Gets the route that matches the specified URL and request type.
-            </summary>
-            <param name="url">The URL to match.</param>
-            <param name="requestType">The request type to match.</param>
-            <returns>The matching route, or null if no route is found.</returns>
-        </member>
-        <member name="M:SharpREST.RestServer.GetRequestType(System.String)">
-            <summary>
-            Maps the specified HTTP method to the corresponding <see cref="T:SharpREST.RestRequestType"/> enum value.
-            </summary>
-            <param name="method">The HTTP method to map.</param>
-            <returns>The corresponding <see cref="T:SharpREST.RestRequestType"/> enum value.</returns>
-        </member>
-        <member name="M:SharpREST.RestServer.AddRoute(SharpREST.RestRequestType,System.String,System.Action{System.Net.HttpListenerContext})">
-            <summary>
-            Adds a new route to the REST server.
-            </summary>
-            <param name="requestType">The request type of the route.</param>
-            <param name="url">The URL of the route.</param>
-            <param name="callback">The callback method to handle the route.</param>
-        </member>
-        <member name="M:SharpREST.RestServer.AddRoute(SharpREST.RestRouteBase)">
-            <summary>
-            Adds a new route to the REST server.
-            </summary>
-            <param name="routeBase">The route to add.</param>
-        </member>
-        <member name="M:SharpREST.RestServer.AddRoutes(System.Collections.Generic.List{SharpREST.RestRouteBase})">
-            <summary>
-            Adds multiple routes to the REST server.
-            </summary>
-            <param name="newRoutes">The routes to add.</param>
-        </member>
-        <member name="M:SharpREST.RestServer.RunServer(System.Int32)">
-            <summary>
-            Runs the REST server on the specified port.
-            </summary>
-            <param name="port">The port number to run the server on. Default is 8088.</param>
-        </member>
-        <member name="M:SharpREST.RestServer.RemoveRoute(SharpREST.RestRouteBase)">
-            <summary>
-            Removes a route from the REST server.
-            </summary>
-            <param name="route">The route to remove.</param>
-        </member>
-        <member name="M:SharpREST.RestServer.ProcessResult(System.Net.HttpListenerContext,System.String,System.Int32)">
-            <summary>
-            Processes the result of an HTTP request and sends the response.
-            </summary>
-            <param name="context">The HTTP listener context.</param>
-            <param name="responseText">The response text to send.</param>
-            <param name="statusCode">The status code of the response.</param>
-        </member>
-        <member name="T:SharpREST.RestRouteBase">
-            <summary>
-            Represents a base class for REST routes.
+            Load all plugins implementing IPlugin in the current assembly.
             </summary>
         </member>
-        <member name="P:SharpREST.RestRouteBase.RequestType">
+        <member name="M:PluginSystem.PluginLoader.ActivatePlugin(System.String)">
             <summary>
-            Gets or sets the request type of the route.
+            Activate a plugin for periodic updates.
             </summary>
         </member>
-        <member name="E:SharpREST.RestRouteBase.Callback">
+        <member name="M:PluginSystem.PluginLoader.DeactivatePlugin(System.String)">
             <summary>
-            Gets or sets the callback method to handle the route.
+            Deactivate a plugin from periodic updates.
             </summary>
         </member>
-        <member name="P:SharpREST.RestRouteBase.URL">
+        <member name="M:PluginSystem.PluginLoader.ExecutePluginOperation(System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">
             <summary>
-            Gets or sets the URL of the route.
+            Execute an operation on a specific plugin.
             </summary>
         </member>
-        <member name="M:SharpREST.RestRouteBase.#ctor">
+        <member name="M:PluginSystem.PluginLoader.Update">
             <summary>
-            Initializes a new instance of the <see cref="T:SharpREST.RestRouteBase"/> class.
+            Periodically update active plugins.
             </summary>
         </member>
-        <member name="M:SharpREST.RestRouteBase.#ctor(SharpREST.RestRequestType,System.String,System.Action{System.Net.HttpListenerContext})">
+        <member name="M:PluginSystem.PluginLoader.ShutdownAllPlugins">
             <summary>
-            Initializes a new instance of the <see cref="T:SharpREST.RestRouteBase"/> class with the specified request type, URL, and callback.
+            Shut down all loaded plugins.
             </summary>
-            <param name="requestType">The request type of the route.</param>
-            <param name="url">The URL of the route.</param>
-            <param name="callback">The callback method to handle the route.</param>
         </member>
-        <member name="M:SharpREST.RestRouteBase.AddRoute(SharpREST.RestRouteBase)">
+        <member name="M:PluginSystem.PluginLoader.GetPlugin(System.String)">
             <summary>
-            Adds the route to the REST server.
-            </summary>
-            <param name="route">The route to add.</param>
-        </member>
-        <member name="M:SharpREST.RestRouteBase.ProcessRequest(System.Net.HttpListenerContext)">
-            <summary>
-            Processes the HTTP request using the callback method.
-            </summary>
-            <param name="request">The HTTP listener context.</param>
-        </member>
-        <member name="T:SharpREST.RestRequestType">
-            <summary>
-            Represents the types of REST requests.
+            Get a plugin by its ID or name.
             </summary>
         </member>
     </members>

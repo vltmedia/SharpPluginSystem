@@ -398,4 +398,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-SharpREST - Backup*.csproj
+SharpPluginSystem - Backup*.csproj
