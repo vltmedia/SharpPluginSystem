@@ -31,9 +31,13 @@ jobs:
         id: previous_tag
         run: |
           # Fetch all tags and find the previous tag
-          git fetch --tags
+          git fetch --tags --force
           previous_tag=$(git tag --sort=-creatordate | sed -n '2p')
-          echo "Previous tag: $previous_tag"
+          if [ -z "$previous_tag" ]; then
+            echo "No previous tag found."
+          else
+            echo "Previous tag: $previous_tag"
+          fi
           echo "previous_tag=$previous_tag" >> $GITHUB_ENV
 
       - name: Generate changelog
