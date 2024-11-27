@@ -71,7 +71,7 @@ namespace PluginSystem.Plugins.Basic
 
 
     // Make a Sin plugin
-    public class MathSinPlugin : BasePlugin<Dictionary<string, object>>
+    public class MathSinPlugin : Plugin
     {
         public override string PluginId => "math_plugin_sin";
         public override string PluginName => "Sin Plugin";
@@ -93,7 +93,7 @@ namespace PluginSystem.Plugins.Basic
 
         public MathSinPlugin()
         {
-            RegisterFunction("SinValue", (inputs, lastResult) =>
+            RegisterFunction("Value", (inputs, lastResult) =>
             {
                 var angle = Convert.ToSingle(inputs["Angle"]);
                 return Math.Sin(angle);
@@ -108,7 +108,7 @@ namespace PluginSystem.Plugins.Basic
     }
 
     // Make a Cos plugin
-    public class MathCosPlugin : BasePlugin<Dictionary<string, object>>
+    public class MathCosPlugin : Plugin
     {
         public override string PluginId => "math_plugin_cos";
         public override string PluginName => "Cos Plugin";
@@ -130,7 +130,7 @@ namespace PluginSystem.Plugins.Basic
 
         public MathCosPlugin()
         {
-            RegisterFunction("CosValue", (inputs, lastResult) =>
+            RegisterFunction("Value", (inputs, lastResult) =>
             {
                 var angle = Convert.ToSingle(inputs["Angle"]);
                 return Math.Cos(angle);
@@ -145,7 +145,7 @@ namespace PluginSystem.Plugins.Basic
     }
 
     // Make a Tan plugin
-    public class MathTanPlugin : BasePlugin<Dictionary<string, object>>
+    public class MathTanPlugin : Plugin
     {
         public override string PluginId => "math_plugin_tan";
         public override string PluginName => "Tan Plugin";
@@ -167,7 +167,7 @@ namespace PluginSystem.Plugins.Basic
 
         public MathTanPlugin()
         {
-            RegisterFunction("TanValue", (inputs, lastResult) =>
+            RegisterFunction("Value", (inputs, lastResult) =>
             {
                 var angle = Convert.ToSingle(inputs["Angle"]);
                 return Math.Tan(angle);
