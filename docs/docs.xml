@@ -4,24 +4,24 @@
         <name>SharpPluginSystem</name>
     </assembly>
     <members>
-        <member name="M:PluginSystem.BasePlugin`1.OnEnabled">
-            <summary>
-            Lifecycle method called when the plugin is enabled.
-            </summary>
-        </member>
-        <member name="M:PluginSystem.BasePlugin`1.OnDisabled">
-            <summary>
-            Lifecycle method called when the plugin is disabled.
-            </summary>
-        </member>
         <member name="M:PluginSystem.BasePlugin`1.RegisterFunction(System.String,System.Func{`0,System.Object,System.Object})">
             <summary>
-            Register a named function for the plugin's output.
+            Register a synchronous function for the plugin's output.
+            </summary>
+        </member>
+        <member name="M:PluginSystem.BasePlugin`1.RegisterFunction(System.String,System.Func{`0,System.Object,System.Threading.Tasks.Task{System.Object}})">
+            <summary>
+            Register an asynchronous function for the plugin's output.
             </summary>
         </member>
         <member name="M:PluginSystem.BasePlugin`1.ExecuteFunction(System.String,`0,System.Object)">
             <summary>
-            Executes a specific function for the given output name.
+            Executes a specific synchronous function for the given output name.
+            </summary>
+        </member>
+        <member name="M:PluginSystem.BasePlugin`1.ExecuteFunctionAsync(System.String,`0,System.Object)">
+            <summary>
+            Executes a specific asynchronous function for the given output name.
             </summary>
         </member>
         <member name="M:PluginSystem.PluginLoader.LoadPlugins">
