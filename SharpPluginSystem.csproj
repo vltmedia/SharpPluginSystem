@@ -9,15 +9,15 @@
     <DocumentationFile>docs/docs.xml</DocumentationFile>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.0.8.3</Version>
+    <Version>1.0.8.4</Version>
     <Authors>UAI Software Inc.</Authors>
     <Description>Create modular plugins for your projects in C#!</Description>
     <PackageProjectUrl>https://github.com/vltmedia/SharpPluginSystem</PackageProjectUrl>
     <RepositoryUrl>https://github.com/vltmedia/SharpPluginSystem</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Plugin, Modules, nodes, node system</PackageTags>
-    <AssemblyVersion>1.0.8.3</AssemblyVersion>
-    <FileVersion>1.0.8.3</FileVersion>
+    <AssemblyVersion>1.0.8.4</AssemblyVersion>
+    <FileVersion>1.0.8.4</FileVersion>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
 
